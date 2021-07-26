@@ -85,13 +85,15 @@ class FirebaseApi {
             'userId': userId,
             'createdAt': DateTime.now(),
             'urlAvatar': 'myUrlAvatar',
-            'name': name
+            'name': name,
+            'deleted': '',
+            'isMessageRead': false,
           },
         );
       });
     });
 
-    final refMes = refMessages.collection('messages');
+    /*final refMes = refMessages.collection('messages');
 
     final newMessage = ChatMessage(
         messageContent: message,
@@ -100,7 +102,7 @@ class FirebaseApi {
         createdAt: DateTime.now(),
         urlAvatar: 'myUrlAvatar',
         name: name);
-    await refMes.add(newMessage.toJson());
+    await refMes.add(newMessage.toJson());*/
 
     // Notify receiver
     final refUsers =
@@ -127,5 +129,85 @@ class FirebaseApi {
         .doc(doc.id);
 
     //documentReference.set(<String, dynamic>{'read': true}, merge: true);
+  }
+
+//
+  static Future<void> clearChat(String userId, String receiverId) async {
+    String _id = getConversationID(userId, receiverId);
+    var collection =
+        await FirebaseFirestore.instance.collection("chats/$_id/$_id").get();
+    collection.docs.forEach((doc) => {
+          doc.reference.update({'$userId deleted': true})
+        });
+  }
+
+  /*static Future<void> deleteChatForUser(
+      String userId, String receiverId, messageId) async {
+    String _id = getConversationID(userId, receiverId);
+    var ref = await FirebaseFirestore.instance
+        .collection("chats/$_id/$_id")
+        .doc(messageId)
+        .get();
+    var message =ref.data();
+    var aa = message['deleted'];
+    print('aaa $aa');
+    if(message['deleted'] != receiverId){
+      await FirebaseFirestore.instance
+        .collection("chats/$_id/$_id")
+        .doc(messageId)
+        .update({'deleted': userId});
+    } else {
+      // TODO DELETE FROM FIRESTORE
+
+    }
+  }*/
+
+  static Future<Map<String, dynamic>> getMessageId(String userId,
+      String receiverId, DateTime timestamp, String message) async {
+    String id;
+    Map<String, dynamic> data;
+    String _id = getConversationID(userId, receiverId);
+
+    var ref = await FirebaseFirestore.instance
+        .collection("chats/$_id/$_id")
+        .where('messageContent', isEqualTo: message)
+        .where('createdAt', isEqualTo: timestamp)
+        .get();
+    ref.docs.forEach((result) {
+      id = result.id;
+      var deleted = result.data()['deleted'];
+      data = {'messageId': id, 'deleted': deleted};
+    });
+    return data;
+  }
+
+  static Future<void> deleteChatForUser(String userId, String receiverId,
+      DateTime timestamp, String message) async {
+    Map<String, dynamic> data;
+    String _id = getConversationID(userId, receiverId);
+    data = await getMessageId(userId, receiverId, timestamp, message);
+    String messageId = data['messageId'];
+    String deleted = data['deleted'];
+    if (deleted != receiverId) {
+      await FirebaseFirestore.instance
+          .collection("chats/$_id/$_id")
+          .doc(messageId)
+          .update({'deleted': userId});
+    } else {
+      deleteMessageForEveryone(userId, receiverId, timestamp, message);
+    }
+  }
+
+  static Future<void> deleteMessageForEveryone(
+      userId, receiverId, timestamp, message) async {
+    var id;
+    String _id = getConversationID(userId, receiverId);
+
+    id = await getMessageId(userId, receiverId, timestamp, message);
+
+    await FirebaseFirestore.instance
+        .collection("chats/$_id/$_id")
+        .doc(id)
+        .delete();
   }
 }

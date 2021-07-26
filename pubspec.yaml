@@ -49,6 +49,7 @@ dependencies:
   url_launcher: ^6.0.9
   lottie: ^1.1.0
   dropdown_plus: ^0.0.9
+  item_selector: ^0.2.0
 
 
 dev_dependencies:

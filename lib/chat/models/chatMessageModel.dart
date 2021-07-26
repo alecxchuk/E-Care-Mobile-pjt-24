@@ -12,30 +12,40 @@ class ChatMessage {
   final DateTime createdAt;
   final String urlAvatar;
   final String name;
+  final String deleted;
+  final bool isMessageRead;
 
-  ChatMessage(
-      {@required this.messageContent,
-      @required this.messageType,
-      @required this.userId,
-      @required this.createdAt,
-      @required this.urlAvatar,
-      @required this.name});
+  ChatMessage({
+    @required this.messageContent,
+    @required this.messageType,
+    @required this.userId,
+    @required this.createdAt,
+    @required this.urlAvatar,
+    @required this.name,
+    @required this.deleted,
+    @required this.isMessageRead,
+  });
 
-  static ChatMessage fromJson(Map<String, dynamic> json) => ChatMessage(
+  static ChatMessage fromJson(Map<String, dynamic> json) =>
+      ChatMessage(
         messageContent: json['messageContent'],
         messageType: json['messageType'],
         userId: json['userId'],
         createdAt: Utils.toDateTime(json['createdAt']),
         urlAvatar: json['urlAvatar'],
         name: json['name'],
+        deleted: json['deleted'],
+        isMessageRead: json['isMessageRead'],
       );
 
-  Map<String, dynamic> toJson() => {
+  Map<String, dynamic> toJson() =>
+      {
         'messageContent': messageContent,
         'messageType': messageType,
         'userId': userId,
         'createdAt': Utils.fromDateTimeToJson(createdAt),
         'urlAvatar': urlAvatar,
         'name': name,
+        'deleted': deleted,
       };
 }

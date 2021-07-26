@@ -72,7 +72,7 @@ class _StartChatState extends State<StartChat> {
               "Neurologist",
               "Pediatrician",
               "Physician",
-              "Psychiatrists",
+              "Psychiatrist",
               "Psychologist"
             ],
             decoration: InputDecoration(

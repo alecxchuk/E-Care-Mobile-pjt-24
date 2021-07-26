@@ -2,6 +2,7 @@ import 'package:e_care_mobile/chat/models/chatUsersModel.dart';
 import 'package:e_care_mobile/chat/models/convo.dart';
 import 'package:e_care_mobile/providers/chat_provider.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:provider/provider.dart';
 
 import 'conversationList.dart';

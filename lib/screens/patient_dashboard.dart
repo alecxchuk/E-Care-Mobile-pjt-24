@@ -678,8 +678,7 @@ class DoctorsList extends StatelessWidget {
                         final doctor = doctors[index].data;
                         //String formattedTime = DateFormat.Hm().format(message.createdAt);
                         return DoctorsListItem(
-                            doctorName:
-                                doctor['firstname'] + ' ' + doctor['surname'],
+                            doctorName: doctor['name'],
                             iconLocation: Icons.cake,
                             date: 'Tue, 26 May at 9:30',
                             color: Colors.blue,
